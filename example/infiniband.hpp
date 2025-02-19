@@ -3,30 +3,6 @@
 #include <iostream>
 #include <infiniband/verbs.h>
 
-int infiniband(int socket)
-{
-    struct ibv_device **device_list;
-    int num_devices;
-    int i;
-
-    device_list = ibv_get_device_list(&num_devices);
-    if (!device_list)
-    {
-        std::cerr << "Error, ibv_get_device_list() failed" << std::endl;
-        return -1;
-    }
-
-    if (num_devices != 1)
-    {
-        std::cerr << "Devices found is not expected value of 1." << std::endl;
-        ibv_free_device_list(device_list);
-        return -1;
-    }
-
-    msg(device_list[0], socket);
-    ibv_free_device_list(device_list);
-}
-
 int msg(struct ibv_device *device, int tcp_socket)
 {
 
@@ -36,7 +12,7 @@ int msg(struct ibv_device *device, int tcp_socket)
     if (!ctx)
     {
         std::cerr << "Error, failed to open the device " << ibv_get_device_name(device) << std::endl;
-        return -1;
+        return 1;
     }
 
     std::cout << "The device " << ibv_get_device_name(ctx->device) << " was opened." << std::endl;
@@ -98,4 +74,30 @@ int msg(struct ibv_device *device, int tcp_socket)
         std::cerr << "Error, failed to close the device " << ibv_get_device_name(ctx->device) << std::endl;
         return rc;
     }
+
+    return 0;
+}
+
+int infiniband(int socket)
+{
+    struct ibv_device **device_list;
+    int num_devices;
+    int i;
+
+    device_list = ibv_get_device_list(&num_devices);
+    if (!device_list)
+    {
+        std::cerr << "Error, ibv_get_device_list() failed" << std::endl;
+        return -1;
+    }
+
+    if (num_devices != 1)
+    {
+        std::cerr << "Devices found is not expected value of 1." << std::endl;
+        ibv_free_device_list(device_list);
+        return -1;
+    }
+
+    msg(device_list[0], socket);
+    ibv_free_device_list(device_list);
 }

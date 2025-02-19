@@ -45,7 +45,7 @@ int create_server(int &server_fd)
     std::cout << "Server listening on port " << PORT << std::endl;
 
     // Accept a connection
-    new_socket = accept(server_fd, (struct sockaddr *)&address, &addr_len);
+    int new_socket = accept(server_fd, (struct sockaddr *)&address, &addr_len);
     if (new_socket < 0)
     {
         std::cerr << "Accept failed" << std::endl;
